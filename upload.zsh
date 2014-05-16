@@ -1,4 +1,4 @@
 
 . config.zsh
 
-make all
+make upload
