@@ -1,4 +1,0 @@
-
-. config.zsh
-
-make upload

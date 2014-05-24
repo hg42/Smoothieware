@@ -1,4 +1,4 @@
 
-. config.zsh
+source config.zsh
 
 make clean
