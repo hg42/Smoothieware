@@ -17,4 +17,6 @@ export PATH=$GCC_DIR/bin:$PATH
 # seems to be unused
 #export LPC_DEPLOY='cp PROJECT.bin /media/MBED/ ; sync'
 
-SMOOTHIE_UPLOAD_DIR=/media/harald/SMOOTHIE/
+
+smoothie_upload_dir=/media/harald/SMOOTHIE/
+upload_after_build=true
