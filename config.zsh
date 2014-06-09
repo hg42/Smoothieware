@@ -17,6 +17,12 @@ export PATH=$GCC_DIR/bin:$PATH
 # seems to be unused
 #export LPC_DEPLOY='cp PROJECT.bin /media/MBED/ ; sync'
 
-
-smoothie_upload_dir=/media/harald/SMOOTHIE/
+smoothie_disk_label=SMOOTHIE
+smoothie_disk_device=/dev/disk/by-label/$smoothie_disk_label
+smoothie_mount_point=/media/disk_by-label_$smoothie_disk_label
+#smoothie_upload_dir=/media/harald/$smoothie_disk_label
+smoothie_upload_dir=$smoothie_mount_point
+firmware_file=$smoothie_upload_dir/firmware.bin
+firmware_built=LPC1768/main.bin
 upload_after_build=true
+burn_after_build=false
