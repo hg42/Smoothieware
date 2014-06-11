@@ -24,5 +24,5 @@ smoothie_upload_dir2=/media/harald/$smoothie_disk_label
 smoothie_upload_dir=$smoothie_mount_point
 firmware_file=firmware.bin
 firmware_built=LPC1768/main.bin
-upload_after_build=true
-burn_after_build=false
+upload_after_build=false
+burn_after_build=true
