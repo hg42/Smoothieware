@@ -162,10 +162,10 @@ int main() {
 
     if(kernel->use_leds) {
         // set some leds to indicate status...
-        //   led1 (flash) gcode received
-        //   led2 (on) init done (dimmed) mainloop running
-        //   led3 (dimmed) idle loop running
-        //   led4 (on) sdcard ok
+        //   led1 flash: gcode received
+        //   led2 on: init done, dimmed: mainloop running
+        //   led3 dimmed: idle loop running
+        //   led4 on: sdcard ok
         leds[1]= 1; // indicate we are done with init
         leds[3]= sdok?1:0; // 4th led inidicates sdcard is available (TODO maye should indicate config was found)
     }
