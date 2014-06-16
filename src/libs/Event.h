@@ -1,6 +1,8 @@
 
 
+EVENT(ON_MAIN_INIT, on_main_init)
 EVENT(ON_MAIN_LOOP, on_main_loop)
+EVENT(ON_SD_OK,     on_sd_ok)
 EVENT(ON_CONSOLE_LINE_RECEIVED, on_console_line_received)
 EVENT(ON_GCODE_RECEIVED, on_gcode_received)
 EVENT(ON_GCODE_EXECUTE, on_gcode_execute)

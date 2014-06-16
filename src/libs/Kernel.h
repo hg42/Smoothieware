@@ -58,7 +58,6 @@ class Kernel {
         StepTicker*       step_ticker;
         Adc*              adc;
         PublicData*       public_data;
-        bool              use_leds;
         string            current_path;
 
     private:
