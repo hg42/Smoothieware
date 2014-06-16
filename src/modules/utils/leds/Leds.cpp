@@ -16,8 +16,11 @@
 #define led_sdok_checksum       CHECKSUM("led_sdok")
 #define led_main_mode_checksum  CHECKSUM("led_main_mode")
 #define led_idle_mode_checksum  CHECKSUM("led_idle_mode")
-#define classic_checksum        CHECKSUM("classic")
-#define test_checksum           CHECKSUM("test")
+#define blink_checksum          CHECKSUM("blink")
+#define dimmed_checksum         CHECKSUM("dimmed")
+
+#define MODE_BLINK              'b'
+#define MODE_DIMMED             'd'
 
 GPIO leds[] = {
     GPIO(P1_18),
@@ -70,8 +73,19 @@ void Leds::on_config_reload(void* argument)
     led_gcode      = THEKERNEL->config->value( leds_checksum, led_gcode_checksum )->by_default(1)->as_int() - 1;
     led_main       = THEKERNEL->config->value( leds_checksum, led_main_checksum  )->by_default(2)->as_int() - 1;
     led_idle       = THEKERNEL->config->value( leds_checksum, led_idle_checksum  )->by_default(3)->as_int() - 1;
-    led_main_mode  = get_checksum(THEKERNEL->config->value( leds_checksum, led_main_mode_checksum  )->by_default("classic")->as_string());
-    led_idle_mode  = get_checksum(THEKERNEL->config->value( leds_checksum, led_idle_mode_checksum  )->by_default("classic")->as_string());
+    string mode;
+    mode = THEKERNEL->config->value( leds_checksum, led_main_mode_checksum  )->by_default("blink")->as_string();
+    if(mode == "blink")
+        led_main_mode = MODE_BLINK;
+    else
+    if(mode == "dimmed")
+        led_main_mode = MODE_DIMMED;
+    mode = THEKERNEL->config->value( leds_checksum, led_idle_mode_checksum  )->by_default("blink")->as_string();
+    if(mode == "blink")
+        led_idle_mode = MODE_BLINK;
+    else
+    if(mode == "dimmed")
+        led_idle_mode = MODE_DIMMED;
 
     counter_gcode = 0;
     counter_main  = 0;
@@ -90,20 +104,20 @@ void Leds::on_sd_ok(void* argument)             {
 
 void Leds::on_main_loop(void* argument)         {
     if(led_main >= 0) {
-        if(led_main_mode == classic_checksum)
+        if(led_main_mode == MODE_BLINK)
             leds[led_main]= (counter_main++ & 0x1000) ? 1 : 0;
         else
-        if(led_main_mode == test_checksum)
+        if(led_main_mode == MODE_DIMMED)
             leds[led_main]= (counter_main++ & 0x03F0) ? 0 : 1;
     }
 }
 
 void Leds::on_idle(void* argument)              {
     if(led_idle >= 0) {
-        if(led_idle_mode == classic_checksum)
+        if(led_idle_mode == MODE_BLINK)
             leds[led_idle]= (counter_idle++ & 0x1000) ? 1 : 0;
         else
-        if(led_idle_mode == test_checksum)
+        if(led_idle_mode == MODE_DIMMED)
             leds[led_idle]= (counter_main++ & 0x03F0) ? 0 : 1;
     }
     if(led_gcode >= 0) {
