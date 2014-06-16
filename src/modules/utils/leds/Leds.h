@@ -19,6 +19,14 @@ public:
     void on_gcode_received(void*);
 
 private:
+    int8_t      led_init;
+    int8_t      led_sdok;
+    int8_t      led_gcode;
+    int8_t      led_main;
+    int         led_main_mode;
+    int8_t      led_idle;
+    int         led_idle_mode;
+
     int16_t     counter_main;
     int16_t     counter_idle;
     int16_t     counter_gcode;
