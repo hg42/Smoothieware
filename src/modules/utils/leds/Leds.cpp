@@ -93,6 +93,13 @@ void Leds::on_config_reload(void* argument)
 }
 
 void Leds::on_main_init(void* argument)         {
+    if(argument) {
+        int& post = *(int*)argument;
+        for(int bit = 0; bit < n_leds; bit++) {
+            leds[bit] = !! (post & (1<<bit));
+        }
+    }
+    else
     if(led_init >= 0)
         leds[led_init] = 1;
 }
@@ -108,7 +115,7 @@ void Leds::on_main_loop(void* argument)         {
             leds[led_main]= (counter_main++ & 0x1000) ? 1 : 0;
         else
         if(led_main_mode == MODE_DIMMED)
-            leds[led_main]= (counter_main++ & 0x03F0) ? 0 : 1;
+            leds[led_main]= (counter_main++ & 0x0380) ? 0 : 1;
     }
 }
 
@@ -118,12 +125,12 @@ void Leds::on_idle(void* argument)              {
             leds[led_idle]= (counter_idle++ & 0x1000) ? 1 : 0;
         else
         if(led_idle_mode == MODE_DIMMED)
-            leds[led_idle]= (counter_main++ & 0x03F0) ? 0 : 1;
+            leds[led_idle]= (counter_main++ & 0x0380) ? 0 : 1;
     }
     if(led_gcode >= 0) {
         if(counter_gcode > 0) {
             counter_gcode++;
-            if(counter_gcode > 0x0200) {
+            if(counter_gcode > 0x0400) {
                 counter_gcode = 0;
                 leds[led_gcode] = 0;
             }
