@@ -116,7 +116,9 @@ void init() {
     kernel->call_event(ON_MAIN_INIT, &++post);
     #endif
     #ifndef NO_TOOLS_EXTRUDER
-    kernel->add_module( new ExtruderMaker() );
+    ExtruderMaker *em= new ExtruderMaker();
+    em->load_tools();
+    delete em;
     kernel->call_event(ON_MAIN_INIT, &++post);
     #endif
     #ifndef NO_TOOLS_TEMPERATURECONTROL
