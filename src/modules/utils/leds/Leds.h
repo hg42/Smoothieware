@@ -18,6 +18,8 @@ public:
     void on_idle(void*);
     void on_gcode_received(void*);
 
+    uint32_t half_second_tick(uint32_t);
+
 private:
     int8_t      led_init;
     int8_t      led_sdok;
@@ -26,6 +28,7 @@ private:
     int         led_main_mode;
     int8_t      led_idle;
     int         led_idle_mode;
+    int8_t      led_play;
 
     int16_t     counter_main;
     int16_t     counter_idle;

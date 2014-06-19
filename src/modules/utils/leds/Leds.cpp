@@ -5,6 +5,9 @@
 #include "checksumm.h"
 #include "utils.h"
 #include "libs/gpio.h"
+#include "SlowTicker.h"
+#include "Pauser.h"
+#include "modules/robot/Conveyor.h"
 
 #define enable_checksum         CHECKSUM("enable")
 #define leds_disable_checksum   CHECKSUM("leds_disable")
@@ -14,6 +17,7 @@
 #define led_idle_checksum       CHECKSUM("led_idle")
 #define led_init_checksum       CHECKSUM("led_init")
 #define led_sdok_checksum       CHECKSUM("led_sdok")
+#define led_play_checksum       CHECKSUM("led_play")
 #define led_main_mode_checksum  CHECKSUM("led_main_mode")
 #define led_idle_mode_checksum  CHECKSUM("led_idle_mode")
 #define blink_checksum          CHECKSUM("blink")
@@ -58,6 +62,8 @@ void Leds::on_module_loaded()
     register_for_event(ON_MAIN_LOOP);
     register_for_event(ON_IDLE);
     register_for_event(ON_GCODE_RECEIVED);
+
+    THEKERNEL->slow_ticker->attach(4, this, &Leds::half_second_tick);
 }
 
 void Leds::on_config_reload(void* argument)
@@ -73,6 +79,7 @@ void Leds::on_config_reload(void* argument)
     led_gcode      = THEKERNEL->config->value( leds_checksum, led_gcode_checksum )->by_default(1)->as_int() - 1;
     led_main       = THEKERNEL->config->value( leds_checksum, led_main_checksum  )->by_default(2)->as_int() - 1;
     led_idle       = THEKERNEL->config->value( leds_checksum, led_idle_checksum  )->by_default(3)->as_int() - 1;
+    led_play       = THEKERNEL->config->value( leds_checksum, led_play_checksum  )->by_default(5)->as_int() - 1;
     string mode;
     mode = THEKERNEL->config->value( leds_checksum, led_main_mode_checksum  )->by_default("blink")->as_string();
     if(mode == "blink")
@@ -143,4 +150,15 @@ void Leds::on_gcode_received(void* argument)    {
         counter_gcode = 1;
         leds[led_gcode] = 1;
     }
+}
+
+uint32_t Leds::half_second_tick(uint32_t)
+{
+    if(led_play >= 0) {
+        if (THEKERNEL->pauser->paused())
+            leds[led_play] = ! leds[led_play].get();
+        else
+            leds[led_play] = ! THEKERNEL->conveyor->is_queue_empty();
+    }
+    return 0;
 }
