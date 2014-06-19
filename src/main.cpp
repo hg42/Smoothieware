@@ -93,63 +93,69 @@ void init() {
     kernel->add_module( new Leds() );   // must be added early
 
     int post = 0;                       // after creating Leds module
-    kernel->call_event(ON_MAIN_INIT, &++post);
 
+    kernel->call_event(ON_MAIN_INIT, &(post=1));
     kernel->add_module( new CurrentControl() );
-    kernel->call_event(ON_MAIN_INIT, &++post);
-    kernel->add_module( new SwitchPool() );
-    kernel->call_event(ON_MAIN_INIT, &++post);
-    kernel->add_module( new PauseButton() );
-    kernel->call_event(ON_MAIN_INIT, &++post);
-    kernel->add_module( new PlayLed() );
-    kernel->call_event(ON_MAIN_INIT, &++post);
+
+    kernel->call_event(ON_MAIN_INIT, &(post=2));
     kernel->add_module( new Endstops() );
-    kernel->call_event(ON_MAIN_INIT, &++post);
+
+    kernel->call_event(ON_MAIN_INIT, &(post=3));
     kernel->add_module( new Player() );
-    kernel->call_event(ON_MAIN_INIT, &++post);
+
+    kernel->call_event(ON_MAIN_INIT, &(post=4));
+    kernel->add_module( new PauseButton() );
+
+    kernel->call_event(ON_MAIN_INIT, &(post=5));
+    kernel->add_module( new PlayLed() );
+
+    // post starts at 8 (leds 00100) for excludable modules
 
     // these modules can be completely disabled in the Makefile by adding to EXCLUDE_MODULES
     #ifndef NO_TOOLS_SWITCH
+    kernel->call_event(ON_MAIN_INIT, &(post=8));
     SwitchPool *sp= new SwitchPool();
     sp->load_tools();
     delete sp;
-    kernel->call_event(ON_MAIN_INIT, &++post);
     #endif
     #ifndef NO_TOOLS_EXTRUDER
+    kernel->call_event(ON_MAIN_INIT, &(post=9));
     ExtruderMaker *em= new ExtruderMaker();
     em->load_tools();
     delete em;
-    kernel->call_event(ON_MAIN_INIT, &++post);
     #endif
     #ifndef NO_TOOLS_TEMPERATURECONTROL
+    kernel->call_event(ON_MAIN_INIT, &(post=10));
     // Note order is important here must be after extruder
     TemperatureControlPool *tp= new TemperatureControlPool();
     tp->load_tools();
     delete tp;
-    kernel->call_event(ON_MAIN_INIT, &++post);
     #endif
     #ifndef NO_TOOLS_LASER
+    kernel->call_event(ON_MAIN_INIT, &(post=11));
     kernel->add_module( new Laser() );
-    kernel->call_event(ON_MAIN_INIT, &++post);
     #endif
     #ifndef NO_UTILS_PANEL
+    kernel->call_event(ON_MAIN_INIT, &(post=12));
     kernel->add_module( new Panel() );
-    kernel->call_event(ON_MAIN_INIT, &++post);
     #endif
     #ifndef NO_TOOLS_TOUCHPROBE
+    kernel->call_event(ON_MAIN_INIT, &(post=13));
     kernel->add_module( new Touchprobe() );
-    kernel->call_event(ON_MAIN_INIT, &++post);
     #endif
     #ifndef NO_TOOLS_ZPROBE
+    kernel->call_event(ON_MAIN_INIT, &(post=14));
     kernel->add_module( new ZProbe() );
-    kernel->call_event(ON_MAIN_INIT, &++post);
     #endif
     #ifndef NONETWORK
+    kernel->call_event(ON_MAIN_INIT, &(post=15));
     kernel->add_module( new Network() );
-    kernel->call_event(ON_MAIN_INIT, &++post);
     #endif
 
+    // post starts at 16 (leds 01000) for final initialisation
+
     // Create and initialize USB stuff
+    kernel->call_event(ON_MAIN_INIT, &(post=16));
     u.init();
     //if(sdok) { // only do this if there is an sd disk
     //    msc= new USBMSD(&u, &sd);
@@ -160,19 +166,20 @@ void init() {
     //     kernel->add_module( msc );
     // }
 
-    kernel->call_event(ON_MAIN_INIT, &++post);
-
+    kernel->call_event(ON_MAIN_INIT, &(post=17));
     kernel->add_module( &msc );
-    kernel->call_event(ON_MAIN_INIT, &++post);
+
+    kernel->call_event(ON_MAIN_INIT, &(post=18));
     kernel->add_module( &usbserial );
     if( kernel->config->value( second_usb_serial_enable_checksum )->by_default(false)->as_bool() ){
         kernel->add_module( new USBSerial(&u) );
     }
-    kernel->call_event(ON_MAIN_INIT, &++post);
+
+    kernel->call_event(ON_MAIN_INIT, &(post=18));
     kernel->add_module( &dfu );
-    kernel->call_event(ON_MAIN_INIT, &++post);
+    kernel->call_event(ON_MAIN_INIT, &(post=19));
     kernel->add_module( &u );
-    kernel->call_event(ON_MAIN_INIT, &++post);
+    kernel->call_event(ON_MAIN_INIT, &(post=20));
 
     // clear up the config cache to save some memory
     kernel->config->config_cache_clear();
@@ -181,6 +188,7 @@ void init() {
     const int off = 100;
     wait_ms(on);
 
+    // blink all post leds when main init phase finished
     post = 0x1F;
     int zero = 0;
     for(int i = 0; i < 5; i++) {
