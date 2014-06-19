@@ -4,38 +4,36 @@
 #include "ConfigValue.h"
 #include "checksumm.h"
 #include "utils.h"
-#include "libs/gpio.h"
 #include "SlowTicker.h"
 #include "Pauser.h"
 #include "modules/robot/Conveyor.h"
 
+#include "wait_api.h"
+
 #define enable_checksum         CHECKSUM("enable")
 #define leds_disable_checksum   CHECKSUM("leds_disable")
 
-#define led_gcode_checksum      CHECKSUM("led_gcode")
-#define led_main_checksum       CHECKSUM("led_main")
-#define led_idle_checksum       CHECKSUM("led_idle")
-#define led_init_checksum       CHECKSUM("led_init")
-#define led_sdok_checksum       CHECKSUM("led_sdok")
-#define led_play_checksum       CHECKSUM("led_play")
-#define led_main_mode_checksum  CHECKSUM("led_main_mode")
-#define led_idle_mode_checksum  CHECKSUM("led_idle_mode")
+#define pins_post_checksum      CHECKSUM("pins_post")
+#define pin_gcode_checksum      CHECKSUM("pin_gcode")
+#define pin_main_checksum       CHECKSUM("pin_main")
+#define pin_idle_checksum       CHECKSUM("pin_idle")
+#define pin_sdok_checksum       CHECKSUM("pin_sdok")
+#define pin_play_checksum       CHECKSUM("pin_play")
+#define mode_main_checksum      CHECKSUM("mode_main")
+#define mode_idle_checksum      CHECKSUM("mode_idle")
 #define blink_checksum          CHECKSUM("blink")
 #define dimmed_checksum         CHECKSUM("dimmed")
 
 #define MODE_BLINK              'b'
 #define MODE_DIMMED             'd'
 
-GPIO leds[] = {
-    GPIO(P1_18),
-    GPIO(P1_19),
-    GPIO(P1_20),
-    GPIO(P1_21),
-    GPIO(P4_28)
-};
+#define PIN_LED1                "1.18!"
+#define PIN_LED2                "1.19!"
+#define PIN_LED3                "1.20!"
+#define PIN_LED4                "1.21!"
+#define PIN_LED5                "4.28!"
 
-const int n_leds = sizeof(leds)/sizeof(GPIO);
-
+#define PINS_POST_DEFAULT       PIN_LED1 "," PIN_LED2 "," PIN_LED3 "," PIN_LED4 "," PIN_LED5
 
 Leds::Leds()  {}
 Leds::~Leds() {}
@@ -67,31 +65,32 @@ void Leds::on_module_loaded()
 
 void Leds::on_config_reload(void* argument)
 {
-    // Default pins to low status
-    for (int i = 0; i < n_leds; i++){
-        leds[i].output();
-        leds[i]= 0;
-    }
+    #define CONFIG_PIN(name,default)                                            \
+      pin_##name.from_string(THEKERNEL->config                                  \
+                  ->value( pin_##name##_checksum, pin_##name##_checksum )       \
+                  ->by_default(default)->as_string())                           \
+                  ->as_output()                                                 \
+                  ->set(false)
 
-    led_init       = THEKERNEL->config->value( leds_checksum, led_init_checksum  )->by_default(1)->as_int() - 1;
-    led_sdok       = THEKERNEL->config->value( leds_checksum, led_sdok_checksum  )->by_default(4)->as_int() - 1;
-    led_gcode      = THEKERNEL->config->value( leds_checksum, led_gcode_checksum )->by_default(1)->as_int() - 1;
-    led_main       = THEKERNEL->config->value( leds_checksum, led_main_checksum  )->by_default(2)->as_int() - 1;
-    led_idle       = THEKERNEL->config->value( leds_checksum, led_idle_checksum  )->by_default(3)->as_int() - 1;
-    led_play       = THEKERNEL->config->value( leds_checksum, led_play_checksum  )->by_default(5)->as_int() - 1;
+    CONFIG_PIN(gcode, PIN_LED1);
+    CONFIG_PIN(main,  PIN_LED2);
+    CONFIG_PIN(idle,  PIN_LED3);
+    CONFIG_PIN(sdok,  PIN_LED4);
+    CONFIG_PIN(play,  PIN_LED5);
+
     string mode;
-    mode = THEKERNEL->config->value( leds_checksum, led_main_mode_checksum  )->by_default("blink")->as_string();
+    mode = THEKERNEL->config->value( leds_checksum, mode_main_checksum  )->by_default("blink")->as_string();
     if(mode == "blink")
-        led_main_mode = MODE_BLINK;
+        mode_main = MODE_BLINK;
     else
     if(mode == "dimmed")
-        led_main_mode = MODE_DIMMED;
-    mode = THEKERNEL->config->value( leds_checksum, led_idle_mode_checksum  )->by_default("blink")->as_string();
+        mode_main = MODE_DIMMED;
+    mode = THEKERNEL->config->value( leds_checksum, mode_idle_checksum  )->by_default("blink")->as_string();
     if(mode == "blink")
-        led_idle_mode = MODE_BLINK;
+        mode_idle = MODE_BLINK;
     else
     if(mode == "dimmed")
-        led_idle_mode = MODE_DIMMED;
+        mode_idle = MODE_DIMMED;
 
     counter_gcode = 0;
     counter_main  = 0;
@@ -99,65 +98,56 @@ void Leds::on_config_reload(void* argument)
 }
 
 void Leds::on_main_init(void* argument)         {
-    if(argument) {
-        int& post = *(int*)argument;
-        for(int bit = 0; bit < n_leds; bit++) {
-            leds[bit] = !! (post & (1<<bit));
-        }
-    }
-    else
-    if(led_init >= 0)
-        leds[led_init] = 1;
 }
 
 void Leds::on_sd_ok(void* argument)             {
-    if(led_sdok >= 0)
-        leds[led_sdok] = 1;
+    if(pin_sdok.connected())
+        pin_sdok.set(1);
 }
 
 void Leds::on_main_loop(void* argument)         {
-    if(led_main >= 0) {
-        if(led_main_mode == MODE_BLINK)
-            leds[led_main]= (counter_main++ & 0x1000) ? 1 : 0;
+    if(pin_main.connected()) {
+        if(mode_main == MODE_BLINK)
+            pin_main.set( (counter_main++ & 0x1000) ? 1 : 0 );
         else
-        if(led_main_mode == MODE_DIMMED)
-            leds[led_main]= (counter_main++ & 0x0380) ? 0 : 1;
+        if(mode_main == MODE_DIMMED)
+            pin_main.set( (counter_main++ & 0x0380) ? 0 : 1 );
     }
 }
 
 void Leds::on_idle(void* argument)              {
-    if(led_idle >= 0) {
-        if(led_idle_mode == MODE_BLINK)
-            leds[led_idle]= (counter_idle++ & 0x1000) ? 1 : 0;
+    if(pin_idle.connected()) {
+        if(mode_idle == MODE_BLINK)
+            pin_idle.set( (counter_idle++ & 0x1000) ? 1 : 0 );
         else
-        if(led_idle_mode == MODE_DIMMED)
-            leds[led_idle]= (counter_main++ & 0x0380) ? 0 : 1;
+        if(mode_idle == MODE_DIMMED)
+            pin_idle.set( (counter_main++ & 0x0380) ? 0 : 1 );
     }
-    if(led_gcode >= 0) {
+    if(pin_gcode.connected()) {
         if(counter_gcode > 0) {
             counter_gcode++;
             if(counter_gcode > 0x0400) {
                 counter_gcode = 0;
-                leds[led_gcode] = 0;
+                pin_gcode.set(0);
             }
         }
     }
 }
 
 void Leds::on_gcode_received(void* argument)    {
-    if(led_gcode >= 0) {
+    if(pin_gcode.connected()) {
         counter_gcode = 1;
-        leds[led_gcode] = 1;
+        pin_gcode.set(1);
     }
 }
 
 uint32_t Leds::half_second_tick(uint32_t)
 {
-    if(led_play >= 0) {
+    if(pin_play.connected()) {
         if (THEKERNEL->pauser->paused())
-            leds[led_play] = ! leds[led_play].get();
+            pin_play.set( ! pin_play.get() );
         else
-            leds[led_play] = ! THEKERNEL->conveyor->is_queue_empty();
+            pin_play.set( ! THEKERNEL->conveyor->is_queue_empty() );
     }
     return 0;
 }

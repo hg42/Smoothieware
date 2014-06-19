@@ -2,6 +2,7 @@
 #define _Leds_H
 
 #include "libs/Kernel.h"
+#include "libs/Pin.h"
 
 #define leds_checksum     CHECKSUM("leds")
 
@@ -21,14 +22,14 @@ public:
     uint32_t half_second_tick(uint32_t);
 
 private:
-    int8_t      led_init;
-    int8_t      led_sdok;
-    int8_t      led_gcode;
-    int8_t      led_main;
-    int         led_main_mode;
-    int8_t      led_idle;
-    int         led_idle_mode;
-    int8_t      led_play;
+    Pin         pin_init;
+    Pin         pin_sdok;
+    Pin         pin_gcode;
+    Pin         pin_main;
+    int         mode_main;
+    Pin         pin_idle;
+    int         mode_idle;
+    Pin         pin_play;
 
     int16_t     counter_main;
     int16_t     counter_idle;
