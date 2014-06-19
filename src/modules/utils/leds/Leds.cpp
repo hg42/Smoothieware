@@ -52,11 +52,10 @@ void Leds::on_module_loaded()
         return;
     }
 
-    // Configuration
+    // Settings
     this->on_config_reload(this);
 
     // register events after initializing scheme
-    register_for_event(ON_CONFIG_RELOAD);
     register_for_event(ON_MAIN_INIT);
     register_for_event(ON_SD_OK);
     register_for_event(ON_MAIN_LOOP);
