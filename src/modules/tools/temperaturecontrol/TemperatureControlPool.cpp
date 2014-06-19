@@ -20,9 +20,7 @@ using namespace std;
 
 #define enable_checksum              CHECKSUM("enable")
 
-TemperatureControlPool::TemperatureControlPool(){}
-
-void TemperatureControlPool::on_module_loaded(){
+void TemperatureControlPool::load_tools(){
 
     vector<uint16_t> modules;
     THEKERNEL->config->get_module_list( &modules, temperature_control_checksum );

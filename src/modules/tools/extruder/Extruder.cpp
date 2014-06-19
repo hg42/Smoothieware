@@ -273,7 +273,6 @@ void Extruder::on_gcode_execute(void *argument)
     if( gcode->has_g ) {
         // G92: Reset extruder position
         if( gcode->g == 92 && this->enabled ) {
-            gcode->mark_as_taken();
             if( gcode->has_letter('E') ) {
                 this->current_position = gcode->get_value('E');
                 this->target_position  = this->current_position;
@@ -312,7 +311,7 @@ void Extruder::on_gcode_execute(void *argument)
             }
 
             if (gcode->has_letter('F')) {
-                feed_rate = gcode->get_value('F') / THEKERNEL->robot->seconds_per_minute;
+                feed_rate = gcode->get_value('F') / THEKERNEL->robot->get_seconds_per_minute();
                 if (feed_rate > max_speed)
                     feed_rate = max_speed;
             }

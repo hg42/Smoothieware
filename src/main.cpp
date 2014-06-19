@@ -69,7 +69,7 @@ DFU dfu __attribute__ ((section ("AHBSRAM0"))) (&u);
 
 SDFAT mounter __attribute__ ((section ("AHBSRAM0"))) ("sd", &sd);
 
-int main() {
+void init() {
 
     Kernel* kernel = new Kernel();
 
@@ -109,13 +109,21 @@ int main() {
     kernel->call_event(ON_MAIN_INIT, &++post);
 
     // these modules can be completely disabled in the Makefile by adding to EXCLUDE_MODULES
+    #ifndef NO_TOOLS_SWITCH
+    SwitchPool *sp= new SwitchPool();
+    sp->load_tools();
+    delete sp;
+    kernel->call_event(ON_MAIN_INIT, &++post);
+    #endif
     #ifndef NO_TOOLS_EXTRUDER
     kernel->add_module( new ExtruderMaker() );
     kernel->call_event(ON_MAIN_INIT, &++post);
     #endif
     #ifndef NO_TOOLS_TEMPERATURECONTROL
     // Note order is important here must be after extruder
-    kernel->add_module( new TemperatureControlPool() );
+    TemperatureControlPool *tp= new TemperatureControlPool();
+    tp->load_tools();
+    delete tp;
     kernel->call_event(ON_MAIN_INIT, &++post);
     #endif
     #ifndef NO_TOOLS_LASER
@@ -200,10 +208,15 @@ int main() {
             fclose(fp);
         }
     }
+}
+
+int main()
+{
+    init();
 
     // Main loop
     while(1){
-        kernel->call_event(ON_MAIN_LOOP);
-        kernel->call_event(ON_IDLE);
+        THEKERNEL->call_event(ON_MAIN_LOOP);
+        THEKERNEL->call_event(ON_IDLE);
     }
 }
