@@ -90,6 +90,30 @@ void init() {
     // Create and add main modules
     kernel->add_module( new SimpleShell() );
     kernel->add_module( new Configurator() );
+
+    // initialize usb/dfu/etc. first to allow flashing when a module hangs
+
+    // Create and initialize USB stuff
+    u.init();
+    //if(sdok) { // only do this if there is an sd disk
+    //    msc= new USBMSD(&u, &sd);
+    //    kernel->add_module( msc );
+    //}
+
+    // if(msc != NULL){
+    //     kernel->add_module( msc );
+    // }
+
+    kernel->add_module( &msc );
+
+    kernel->add_module( &usbserial );
+    if( kernel->config->value( second_usb_serial_enable_checksum )->by_default(false)->as_bool() ){
+        kernel->add_module( new USBSerial(&u) );
+    }
+
+    kernel->add_module( &dfu );
+    kernel->add_module( &u );
+
     kernel->add_module( new Leds() );   // must be added early
 
     int post = 0;                       // after creating Leds module
@@ -151,35 +175,6 @@ void init() {
     kernel->call_event(ON_MAIN_INIT, &(post=15));
     kernel->add_module( new Network() );
     #endif
-
-    // post starts at 16 (leds 01000) for final initialisation
-
-    // Create and initialize USB stuff
-    kernel->call_event(ON_MAIN_INIT, &(post=16));
-    u.init();
-    //if(sdok) { // only do this if there is an sd disk
-    //    msc= new USBMSD(&u, &sd);
-    //    kernel->add_module( msc );
-    //}
-
-    // if(msc != NULL){
-    //     kernel->add_module( msc );
-    // }
-
-    kernel->call_event(ON_MAIN_INIT, &(post=17));
-    kernel->add_module( &msc );
-
-    kernel->call_event(ON_MAIN_INIT, &(post=18));
-    kernel->add_module( &usbserial );
-    if( kernel->config->value( second_usb_serial_enable_checksum )->by_default(false)->as_bool() ){
-        kernel->add_module( new USBSerial(&u) );
-    }
-
-    kernel->call_event(ON_MAIN_INIT, &(post=18));
-    kernel->add_module( &dfu );
-    kernel->call_event(ON_MAIN_INIT, &(post=19));
-    kernel->add_module( &u );
-    kernel->call_event(ON_MAIN_INIT, &(post=20));
 
     // clear up the config cache to save some memory
     kernel->config->config_cache_clear();
