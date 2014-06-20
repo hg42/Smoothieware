@@ -26,10 +26,11 @@ private:
     Pin         pin_sdok;
     Pin         pin_gcode;
     Pin         pin_main;
-    int         mode_main;
     Pin         pin_idle;
-    int         mode_idle;
     Pin         pin_play;
+
+    void        (*handler_main)(Pin& pin, char event, void* data);
+    void        (*handler_idle)(Pin& pin, char event, void* data);
 
     int16_t     counter_main;
     int16_t     counter_idle;

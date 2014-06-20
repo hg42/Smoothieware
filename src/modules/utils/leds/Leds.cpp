@@ -63,6 +63,46 @@ void Leds::on_module_loaded()
     THEKERNEL->slow_ticker->attach(4, this, &Leds::half_second_tick);
 }
 
+static void off(Pin& pin, char event, void* data) {
+}
+
+static void blink(Pin& pin, char event, void* data) {
+    int& counter = *(int*)data;
+    switch(event) {
+    case 't':
+        pin.set( counter++ & 0x1000 );
+        break;
+    }
+}
+
+static void dimmed(Pin& pin, char event, void* data) {
+    int& counter = *(int*)data;
+    switch(event) {
+    case 't':
+        pin.set( ! (counter++ & 0x0700) );
+        break;
+    }
+}
+
+static void flash(Pin& pin, char event, void* data) {
+    int& counter = *(int*)data;
+    switch(event) {
+    case 't':
+        counter = 1;
+        pin.set(true);
+        break;
+    case 'i':
+        if(counter > 0) {
+            counter++;
+            if(counter > 0x0400) {
+                counter = 0;
+                pin.set(false);
+            }
+        }
+        break;
+    }
+}
+
 void Leds::on_config_reload(void* argument)
 {
     #define CONFIG_PIN(name,default)                                            \
@@ -77,20 +117,23 @@ void Leds::on_config_reload(void* argument)
     CONFIG_PIN(idle,  PIN_LED3);
     CONFIG_PIN(sdok,  PIN_LED4);
     CONFIG_PIN(play,  PIN_LED5);
+    handler_main = off;
+    handler_idle = off;
 
     string mode;
     mode = THEKERNEL->config->value( leds_checksum, mode_main_checksum  )->by_default("blink")->as_string();
     if(mode == "blink")
-        mode_main = MODE_BLINK;
+        handler_main = blink;
     else
     if(mode == "dimmed")
-        mode_main = MODE_DIMMED;
+        handler_main = dimmed;
+
     mode = THEKERNEL->config->value( leds_checksum, mode_idle_checksum  )->by_default("blink")->as_string();
     if(mode == "blink")
-        mode_idle = MODE_BLINK;
+        handler_idle = blink;
     else
     if(mode == "dimmed")
-        mode_idle = MODE_DIMMED;
+        handler_idle = dimmed;
 
     counter_gcode = 0;
     counter_main  = 0;
@@ -127,37 +170,22 @@ void Leds::on_sd_ok(void* argument)             {
 
 void Leds::on_main_loop(void* argument)         {
     if(pin_main.connected()) {
-        if(mode_main == MODE_BLINK)
-            pin_main.set( counter_main++ & 0x1000 );
-        else
-        if(mode_main == MODE_DIMMED)
-            pin_main.set( ! (counter_main++ & 0x0700) );
+        handler_main(pin_main, 't', &counter_main);
     }
 }
 
 void Leds::on_idle(void* argument)              {
     if(pin_idle.connected()) {
-        if(mode_idle == MODE_BLINK)
-            pin_idle.set( counter_idle++ & 0x1000 );
-        else
-        if(mode_idle == MODE_DIMMED)
-            pin_idle.set( ! (counter_main++ & 0x0700) );
+        handler_idle(pin_idle, 't', &counter_idle);
     }
     if(pin_gcode.connected()) {
-        if(counter_gcode > 0) {
-            counter_gcode++;
-            if(counter_gcode > 0x0400) {
-                counter_gcode = 0;
-                pin_gcode.set(false);
-            }
-        }
+        flash(pin_gcode, 'i', &counter_gcode);
     }
 }
 
 void Leds::on_gcode_received(void* argument)    {
     if(pin_gcode.connected()) {
-        counter_gcode = 1;
-        pin_gcode.set(true);
+        flash(pin_gcode, 't', &counter_gcode);
     }
 }
 
