@@ -16,7 +16,7 @@ public:
 
     void on_module_loaded();
     void on_config_reload(void*);
-    void on_main_init(void*);
+    void on_post(void*);
     void on_sd_ok(void*);
     void on_main_loop(void*);
     void on_idle(void*);

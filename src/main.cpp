@@ -121,61 +121,61 @@ void init() {
 
     int post = 0;                       // after creating Leds module
 
-    kernel->call_event(ON_MAIN_INIT, &(post=1));
+    kernel->call_event(ON_POST, &(post=1));
     kernel->add_module( new CurrentControl() );
 
-    kernel->call_event(ON_MAIN_INIT, &(post=2));
+    kernel->call_event(ON_POST, &(post=2));
     kernel->add_module( new Endstops() );
 
-    kernel->call_event(ON_MAIN_INIT, &(post=3));
+    kernel->call_event(ON_POST, &(post=3));
     kernel->add_module( new Player() );
 
-    kernel->call_event(ON_MAIN_INIT, &(post=4));
+    kernel->call_event(ON_POST, &(post=4));
     kernel->add_module( new PauseButton() );
 
-    kernel->call_event(ON_MAIN_INIT, &(post=5));
+    kernel->call_event(ON_POST, &(post=5));
     kernel->add_module( new PlayLed() );
 
     // post starts at 8 (leds 00100) for excludable modules
 
     // these modules can be completely disabled in the Makefile by adding to EXCLUDE_MODULES
     #ifndef NO_TOOLS_SWITCH
-    kernel->call_event(ON_MAIN_INIT, &(post=8));
+    kernel->call_event(ON_POST, &(post=8));
     SwitchPool *sp= new SwitchPool();
     sp->load_tools();
     delete sp;
     #endif
     #ifndef NO_TOOLS_EXTRUDER
-    kernel->call_event(ON_MAIN_INIT, &(post=9));
+    kernel->call_event(ON_POST, &(post=9));
     ExtruderMaker *em= new ExtruderMaker();
     em->load_tools();
     delete em;
     #endif
     #ifndef NO_TOOLS_TEMPERATURECONTROL
-    kernel->call_event(ON_MAIN_INIT, &(post=10));
+    kernel->call_event(ON_POST, &(post=10));
     // Note order is important here must be after extruder
     TemperatureControlPool *tp= new TemperatureControlPool();
     tp->load_tools();
     delete tp;
     #endif
     #ifndef NO_TOOLS_LASER
-    kernel->call_event(ON_MAIN_INIT, &(post=11));
+    kernel->call_event(ON_POST, &(post=11));
     kernel->add_module( new Laser() );
     #endif
     #ifndef NO_UTILS_PANEL
-    kernel->call_event(ON_MAIN_INIT, &(post=12));
+    kernel->call_event(ON_POST, &(post=12));
     kernel->add_module( new Panel() );
     #endif
     #ifndef NO_TOOLS_TOUCHPROBE
-    kernel->call_event(ON_MAIN_INIT, &(post=13));
+    kernel->call_event(ON_POST, &(post=13));
     kernel->add_module( new Touchprobe() );
     #endif
     #ifndef NO_TOOLS_ZPROBE
-    kernel->call_event(ON_MAIN_INIT, &(post=14));
+    kernel->call_event(ON_POST, &(post=14));
     kernel->add_module( new ZProbe() );
     #endif
     #ifndef NONETWORK
-    kernel->call_event(ON_MAIN_INIT, &(post=15));
+    kernel->call_event(ON_POST, &(post=15));
     kernel->add_module( new Network() );
     #endif
 
@@ -187,9 +187,9 @@ void init() {
     post = 0xFF;
     int zero = 0;
     for(int i = 0; i < 5; i++) {
-        kernel->call_event(ON_MAIN_INIT, &post);
+        kernel->call_event(ON_POST, &post);
         wait_ms(on);
-        kernel->call_event(ON_MAIN_INIT, &zero);
+        kernel->call_event(ON_POST, &zero);
         wait_ms(off);
     }
     wait_ms(500);

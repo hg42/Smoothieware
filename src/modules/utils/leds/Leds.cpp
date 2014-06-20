@@ -135,7 +135,7 @@ void Leds::on_module_loaded()
     this->on_config_reload(this);
 
     // register events after initializing scheme
-    register_for_event(ON_MAIN_INIT);
+    register_for_event(ON_POST);
     register_for_event(ON_SD_OK);
     register_for_event(ON_MAIN_LOOP);
     register_for_event(ON_IDLE);
@@ -153,7 +153,7 @@ void Leds::on_config_reload(void* argument)
     CONFIG_PIN___( play,  PIN_LED5, ""       );
 }
 
-void Leds::on_main_init(void* argument)         {
+void Leds::on_post(void* argument)         {
     if(argument) {
         int post = *(int*)argument;
         // scan comma separated config string for pin descriptions
