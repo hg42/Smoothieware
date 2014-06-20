@@ -102,10 +102,6 @@ void Leds::on_config_reload(void* argument)
 void Leds::on_main_init(void* argument)         {
     if(argument) {
         int& post = *(int*)argument;
-        if(post != 99)
-            return;
-THEKERNEL->config->config_cache_load();
-THEKERNEL->streams->printf("pins_post: '%s' (default)\n", PINS_POST_DEFAULT);
         // cpu time doesn't matter while booting
         // scan comma separated config string for pin descriptions
         string pins_post = THEKERNEL->config
@@ -113,7 +109,6 @@ THEKERNEL->streams->printf("pins_post: '%s' (default)\n", PINS_POST_DEFAULT);
                               ->by_default(PINS_POST_DEFAULT)
                               ->as_string();
         int16_t mask = 1;
-THEKERNEL->streams->printf("pins_post: '%s'\n", pins_post.c_str());
         while(pins_post.length()
               && ! (mask & 0x100) // prevent endless loop
               ) {
@@ -130,8 +125,6 @@ THEKERNEL->streams->printf("pins_post: '%s'\n", pins_post.c_str());
             pin_bit = pins_post;
             pins_post = "";
             }
-THEKERNEL->streams->printf("post: pin_bit: '%s' pins_post: '%s' mask: %02X\n", pin_bit.c_str(), pins_post.c_str(), (int)mask);
-//break;
           pin.from_string(pin_bit)->as_output();
           pin.set(post & mask);
           mask = (mask << 1);

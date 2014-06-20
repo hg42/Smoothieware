@@ -476,9 +476,6 @@ void SimpleShell::set_temp_command( string parameters, StreamOutput *stream)
 
 void SimpleShell::help_command( string parameters, StreamOutput *stream )
 {
-int post = 99;
-THEKERNEL->call_event(ON_MAIN_INIT, &post);
-return;
     stream->printf("Commands:\r\n");
     stream->printf("version\r\n");
     stream->printf("mem [-v]\r\n");
