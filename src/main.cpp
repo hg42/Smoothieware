@@ -91,6 +91,7 @@ void init() {
     kernel->add_module( new SimpleShell() );
     kernel->add_module( new Configurator() );
 
+
     // initialize usb/dfu/etc. first to allow flashing when a module hangs
 
     // Create and initialize USB stuff
@@ -114,7 +115,9 @@ void init() {
     kernel->add_module( &dfu );
     kernel->add_module( &u );
 
+
     kernel->add_module( new Leds() );   // must be added early
+
 
     int post = 0;                       // after creating Leds module
 
@@ -176,15 +179,12 @@ void init() {
     kernel->add_module( new Network() );
     #endif
 
-    // clear up the config cache to save some memory
-    kernel->config->config_cache_clear();
-
-    const int on  = 400;
-    const int off = 100;
+    const int on  = 100;
+    const int off =  10;
     wait_ms(on);
 
     // blink all post leds when main init phase finished
-    post = 0x1F;
+    post = 0xFF;
     int zero = 0;
     for(int i = 0; i < 5; i++) {
         kernel->call_event(ON_MAIN_INIT, &post);
@@ -192,6 +192,10 @@ void init() {
         kernel->call_event(ON_MAIN_INIT, &zero);
         wait_ms(off);
     }
+    wait_ms(500);
+
+    // clear up the config cache to save some memory
+    kernel->config->config_cache_clear();
 
     if(sdok) {
         kernel->call_event(ON_SD_OK);
