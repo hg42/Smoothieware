@@ -70,7 +70,7 @@ void Leds::on_config_reload(void* argument)
                   ->value( pin_##name##_checksum, pin_##name##_checksum )       \
                   ->by_default(default)->as_string())                           \
                   ->as_output()                                                 \
-                  ->set(false)
+                  ->set(0)
 
     CONFIG_PIN(gcode, PIN_LED1);
     CONFIG_PIN(main,  PIN_LED2);
@@ -97,7 +97,47 @@ void Leds::on_config_reload(void* argument)
     counter_idle  = 0;
 }
 
+#include "StreamOutputPool.h"
+
 void Leds::on_main_init(void* argument)         {
+    if(argument) {
+        int& post = *(int*)argument;
+        if(post != 99)
+            return;
+THEKERNEL->config->config_cache_load();
+THEKERNEL->streams->printf("pins_post: '%s' (default)\n", PINS_POST_DEFAULT);
+        // cpu time doesn't matter while booting
+        // scan comma separated config string for pin descriptions
+        string pins_post = THEKERNEL->config
+                              ->value( leds_checksum, pins_post_checksum )
+                              ->by_default(PINS_POST_DEFAULT)
+                              ->as_string();
+        int16_t mask = 1;
+THEKERNEL->streams->printf("pins_post: '%s'\n", pins_post.c_str());
+        while(pins_post.length()
+              && ! (mask & 0x100) // prevent endless loop
+              ) {
+          Pin pin;
+          string pin_bit;
+          size_t comma = pins_post.find_first_of(',');
+          if(comma <= pins_post.length())
+            {
+            pin_bit = pins_post.substr(0, comma);
+            pins_post = pins_post.substr(comma+1);
+            }
+          else
+            {
+            pin_bit = pins_post;
+            pins_post = "";
+            }
+THEKERNEL->streams->printf("post: pin_bit: '%s' pins_post: '%s' mask: %02X\n", pin_bit.c_str(), pins_post.c_str(), (int)mask);
+//break;
+          pin.from_string(pin_bit)->as_output();
+          pin.set(post & mask);
+          mask = (mask << 1);
+          wait_ms(250);
+        }
+    }
 }
 
 void Leds::on_sd_ok(void* argument)             {
