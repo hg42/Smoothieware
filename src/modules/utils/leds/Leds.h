@@ -25,7 +25,6 @@ public:
     uint32_t half_second_tick(uint32_t);
 
 private:
-    Pin         pin_init;
     Pin         pin_sdok;
     Pin         pin_gcode;
     Pin         pin_main;

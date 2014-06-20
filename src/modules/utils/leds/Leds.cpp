@@ -19,10 +19,6 @@
 #define pin_idle_checksum       CHECKSUM("pin_idle")
 #define pin_sdok_checksum       CHECKSUM("pin_sdok")
 #define pin_play_checksum       CHECKSUM("pin_play")
-#define mode_main_checksum      CHECKSUM("mode_main")
-#define mode_idle_checksum      CHECKSUM("mode_idle")
-#define blink_checksum          CHECKSUM("blink")
-#define dimmed_checksum         CHECKSUM("dimmed")
 
 #define MODE_BLINK              'b'
 #define MODE_DIMMED             'd'
