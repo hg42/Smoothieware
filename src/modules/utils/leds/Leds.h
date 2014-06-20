@@ -6,6 +6,9 @@
 
 #define leds_checksum     CHECKSUM("leds")
 
+typedef void (*Leds_handler)(Pin& pin, char event, void* data);
+
+
 class Leds : public Module {
 public:
     Leds();
@@ -29,8 +32,8 @@ private:
     Pin         pin_idle;
     Pin         pin_play;
 
-    void        (*handler_main)(Pin& pin, char event, void* data);
-    void        (*handler_idle)(Pin& pin, char event, void* data);
+    Leds_handler handler_main;
+    Leds_handler handler_idle;
 
     int16_t     counter_main;
     int16_t     counter_idle;

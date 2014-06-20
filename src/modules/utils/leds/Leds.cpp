@@ -35,34 +35,6 @@
 
 #define PINS_POST_DEFAULT       PIN_LED1 " " PIN_LED2 " " PIN_LED3 " " PIN_LED4 " " PIN_LED5
 
-Leds::Leds()  {}
-Leds::~Leds() {}
-
-void Leds::on_module_loaded()
-{
-    // old config leds_disable
-    bool use_leds = ! THEKERNEL->config->value( leds_disable_checksum )->by_default(false)->as_bool();
-         use_leds =   THEKERNEL->config->value( leds_checksum, enable_checksum )->by_default( use_leds )->as_bool();
-
-    // Exit if this module is not enabled
-    if ( ! use_leds ) {
-        delete this;
-        return;
-    }
-
-    // Settings
-    this->on_config_reload(this);
-
-    // register events after initializing scheme
-    register_for_event(ON_MAIN_INIT);
-    register_for_event(ON_SD_OK);
-    register_for_event(ON_MAIN_LOOP);
-    register_for_event(ON_IDLE);
-    register_for_event(ON_GCODE_RECEIVED);
-
-    THEKERNEL->slow_ticker->attach(4, this, &Leds::half_second_tick);
-}
-
 static void off(Pin& pin, char event, void* data) {
 }
 
@@ -103,41 +75,82 @@ static void flash(Pin& pin, char event, void* data) {
     }
 }
 
+static void config_pin(Pin& pin, uint16_t checksum, string default_pin_setup, string defaults, Leds_handler* handler = 0, int16_t* counter = 0) {
+
+    string config = THEKERNEL->config->value( leds_checksum, checksum  )->by_default(defaults)->as_string();
+
+    string pin_setup;
+    while(config.size()) {
+        string param = shift_parameter(config);
+        if( ! param.size() )
+            continue;
+        if(handler && param == "off")
+            *handler = off;
+        else
+        if(handler && param == "blink")
+            *handler = blink;
+        else
+        if(handler && param == "dimmed")
+            *handler = dimmed;
+        else
+            pin_setup = param;
+    }
+    if(counter)
+        *counter = 0;
+    if(handler && *handler == off)
+        pin_setup = "";
+    else
+    if( ! pin_setup.size() )
+        pin_setup = default_pin_setup;
+    if(pin_setup.size())
+        pin.from_string(pin_setup)->as_output()->set(false);
+}
+
+#define CONFIG_PIN___(name,default_pin_setup,defaults) \
+    config_pin(pin_##name, pin_##name##_checksum, default_pin_setup, defaults)
+
+#define CONFIG_PIN_HC(name,default_pin_setup,defaults) \
+    config_pin(pin_##name, pin_##name##_checksum, default_pin_setup, defaults, &handler_##name, &counter_##name)
+
+#define CONFIG_PIN__C(name,default_pin_setup,defaults) \
+    config_pin(pin_##name, pin_##name##_checksum, default_pin_setup, defaults, 0, &counter_##name)
+
+
+Leds::Leds()  {}
+Leds::~Leds() {}
+
+void Leds::on_module_loaded()
+{
+    // old config leds_disable
+    bool use_leds = ! THEKERNEL->config->value( leds_disable_checksum )->by_default(false)->as_bool();
+         use_leds =   THEKERNEL->config->value( leds_checksum, enable_checksum )->by_default( use_leds )->as_bool();
+
+    // Exit if this module is not enabled
+    if ( ! use_leds ) {
+        delete this;
+        return;
+    }
+
+    // Settings
+    this->on_config_reload(this);
+
+    // register events after initializing scheme
+    register_for_event(ON_MAIN_INIT);
+    register_for_event(ON_SD_OK);
+    register_for_event(ON_MAIN_LOOP);
+    register_for_event(ON_IDLE);
+    register_for_event(ON_GCODE_RECEIVED);
+
+    THEKERNEL->slow_ticker->attach(4, this, &Leds::half_second_tick);
+}
+
 void Leds::on_config_reload(void* argument)
 {
-    #define CONFIG_PIN(name,default)                                            \
-      pin_##name.from_string(THEKERNEL->config                                  \
-                  ->value( pin_##name##_checksum, pin_##name##_checksum )       \
-                  ->by_default(default)->as_string())                           \
-                  ->as_output()                                                 \
-                  ->set(false)
-
-    CONFIG_PIN(gcode, PIN_LED1);
-    CONFIG_PIN(main,  PIN_LED2);
-    CONFIG_PIN(idle,  PIN_LED3);
-    CONFIG_PIN(sdok,  PIN_LED4);
-    CONFIG_PIN(play,  PIN_LED5);
-    handler_main = off;
-    handler_idle = off;
-
-    string mode;
-    mode = THEKERNEL->config->value( leds_checksum, mode_main_checksum  )->by_default("blink")->as_string();
-    if(mode == "blink")
-        handler_main = blink;
-    else
-    if(mode == "dimmed")
-        handler_main = dimmed;
-
-    mode = THEKERNEL->config->value( leds_checksum, mode_idle_checksum  )->by_default("blink")->as_string();
-    if(mode == "blink")
-        handler_idle = blink;
-    else
-    if(mode == "dimmed")
-        handler_idle = dimmed;
-
-    counter_gcode = 0;
-    counter_main  = 0;
-    counter_idle  = 0;
+    CONFIG_PIN__C( gcode, PIN_LED1, ""       );
+    CONFIG_PIN_HC( main,  PIN_LED2, "dimmed" );
+    CONFIG_PIN_HC( idle,  PIN_LED3, "dimmed" );
+    CONFIG_PIN___( sdok,  PIN_LED4, ""       );
+    CONFIG_PIN___( play,  PIN_LED5, ""       );
 }
 
 void Leds::on_main_init(void* argument)         {
@@ -150,9 +163,7 @@ void Leds::on_main_init(void* argument)         {
                               ->by_default(PINS_POST_DEFAULT)
                               ->as_string();
         int16_t mask = 1;
-        while(pins_post.length()
-              && ! (mask & 0x100) // prevent endless loop
-              ) {
+        while(pins_post.size()) {
             Pin pin;
             string pin_bit = shift_parameter(pins_post);
             pin.from_string(pin_bit)->as_output();
