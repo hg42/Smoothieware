@@ -1,3 +1,4 @@
+#include "Kernel.h"
 #include "Watchdog.h"
 
 #include <lpc17xx_wdt.h>
@@ -21,7 +22,7 @@ void Watchdog::feed()
 
 void Watchdog::on_module_loaded()
 {
-    register_for_event(ON_IDLE, on_idle);
+    register_for_event(ON_IDLE, Watchdog::on_idle);
     feed();
 }
 

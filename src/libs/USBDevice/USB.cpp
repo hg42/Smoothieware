@@ -663,7 +663,7 @@ void USB::dumpDescriptors() {
 
 void USB::on_module_loaded()
 {
-    register_for_event(ON_IDLE, on_idle);
+    register_for_event(ON_IDLE, USB::on_idle);
     connect();
 }
 

@@ -27,8 +27,8 @@ enum _EVENT_ENUM {
 };
 
 class Module;
-//typedef void (Module::*ModuleCallback)(void * argument);
-typedef void (Module::*ModuleCallback)(void * argument);
+#include <functional>
+typedef std::function<void(void*)> ModuleCallback;
 
 // Module base class
 // All modules must extend this class, see http://smoothieware.org/moduleexample
@@ -39,7 +39,9 @@ public:
     virtual ~Module();
     virtual void on_module_loaded(){};
 
-    void register_for_event(_EVENT_ENUM event_id, ModuleCallback event_handler);
+    void register_for_event_(_EVENT_ENUM event_id, ModuleCallback event_handler);
 };
+
+#define register_for_event(id,function) register_for_event_(id, std::bind(&function, *this, std::placeholders::_1))
 
 #endif

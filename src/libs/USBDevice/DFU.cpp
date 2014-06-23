@@ -98,7 +98,7 @@ bool DFU::USBEvent_RequestComplete(CONTROL_TRANSFER &control, uint8_t *buf, uint
 
 void DFU::on_module_loaded()
 {
-    register_for_event(ON_IDLE, on_idle);
+    register_for_event(ON_IDLE, DFU::on_idle);
 }
 
 void DFU::on_idle(void* argument)

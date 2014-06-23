@@ -162,7 +162,7 @@ void Network::on_module_loaded()
     // Register for events
     this->register_for_event(ON_IDLE,            on_idle);
     this->register_for_event(ON_MAIN_LOOP,       on_main_loop);
-    this->register_for_event(ON_GET_PUBLIC_DATA, on_public_data);
+    this->register_for_event(ON_GET_PUBLIC_DATA, on_get_public_data);
 
     this->init();
 }

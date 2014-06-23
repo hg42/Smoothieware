@@ -11,8 +11,8 @@
 Module::Module(){}
 Module::~Module(){}
 
-void Module::register_for_event(_EVENT_ENUM event_id, ModuleCallback event_handler){
+void Module::register_for_event_(_EVENT_ENUM event_id, ModuleCallback event_handler){
     // Events are the basic building blocks of Smoothie. They register for events, and then do stuff when those events are called.
     // You add things to Smoothie by making a new class that inherits the Module class. See http://smoothieware.org/moduleexample for a crude introduction
-    THEKERNEL->register_for_event(event_id, this, event_handler);
+    THEKERNEL->register_for_event_(event_id, event_handler);
 }

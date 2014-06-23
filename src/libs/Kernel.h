@@ -38,7 +38,7 @@ class Kernel {
         const char* config_override_filename(){ return "/sd/config-override"; }
 
         void add_module(Module* module);
-        void register_for_event(_EVENT_ENUM event_id, Module* module, ModuleCallback event_handler);
+        void register_for_event_(_EVENT_ENUM event_id, ModuleCallback event_handler);
         void call_event(_EVENT_ENUM id_event);
         void call_event(_EVENT_ENUM id_event, void * argument);
 
@@ -63,15 +63,8 @@ class Kernel {
         int               base_stepping_frequency;
 
     private:
-
-        struct EventHook {
-                EventHook(Module* module, ModuleCallback event_handler);
-
-                Module*         module;
-                ModuleCallback  handler;
-        };
         // When a module asks to be called for a specific event ( a hook ), this is where that request is remembered
-        std::array<std::vector<EventHook>, NUMBER_OF_DEFINED_EVENTS> hooks;
+        std::array<std::vector<ModuleCallback>, NUMBER_OF_DEFINED_EVENTS> hooks;
 };
 
 #endif
