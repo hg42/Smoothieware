@@ -1,0 +1,11 @@
+# SciTE session file
+
+buffer.1.path=/home/harald/3D-print/smoothie/Smoothieware/build.zsh
+buffer.1.position=1
+buffer.1.current=1
+
+buffer.2.path=/home/harald/3D-print/smoothie/Smoothieware/src/main.cpp
+buffer.2.position=1
+
+buffer.3.path=/home/harald/3D-print/smoothie/Smoothieware/src/libs/SlowTicker.cpp
+buffer.3.position=1
