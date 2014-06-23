@@ -16,10 +16,10 @@ class PanelScreen
 {
 public:
     PanelScreen();
-    virtual void on_refresh();
-    virtual void on_main_loop();
+    void on_refresh();
+    void on_main_loop();
     PanelScreen *set_parent(PanelScreen *passed_parent);
-    virtual void on_enter();
+    void on_enter();
     // if you completely rewrite the screen do not clear it, this avoids flicker
     void refresh_screen(bool clear);
     void refresh_menu(bool clear);

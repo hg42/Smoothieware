@@ -89,7 +89,7 @@ public:
     bool USBEvent_connectStateChanged(bool connected);
     bool USBEvent_suspendStateChanged(bool suspended);
 
-    virtual void on_module_loaded(void);
+    void on_module_loaded(void);
 
     // USB descriptors
     usbdesc_interface MSC_Interface;

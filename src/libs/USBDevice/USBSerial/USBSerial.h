@@ -56,8 +56,8 @@ protected:
 
     virtual bool SerialEvent_RX(void){return false;};
 
-    virtual void on_attach(void);
-    virtual void on_detach(void);
+    void on_attach(void);
+    void on_detach(void);
 
     void ensure_tx_space(int);
 

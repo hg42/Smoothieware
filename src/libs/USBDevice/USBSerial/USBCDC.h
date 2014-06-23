@@ -41,8 +41,8 @@ protected:
     virtual bool USBEvent_Request(CONTROL_TRANSFER&);
     virtual bool USBEvent_RequestComplete(CONTROL_TRANSFER&, uint8_t*, uint32_t);
 
-    virtual void on_attach(void);
-    virtual void on_detach(void);
+    void on_attach(void);
+    void on_detach(void);
 
     USB *usb;
 

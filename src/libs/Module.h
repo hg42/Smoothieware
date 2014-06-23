@@ -37,7 +37,7 @@ class Module
 public:
     Module();
     virtual ~Module();
-    virtual void on_module_loaded(){};
+    void on_module_loaded(){};
 
     void register_for_event_(_EVENT_ENUM event_id, ModuleCallback event_handler);
 };

@@ -59,8 +59,8 @@ class LcdBase {
         // right most. x_offset must by byte aligned if used
         virtual void bltGlyph(int x, int y, int w, int h, const uint8_t *glyph, int span= 0, int x_offset=0, int y_offset=0){}
         // only used on certain panels
-        virtual void on_refresh(bool now= false){};
-        virtual void on_main_loop(){};
+        void on_refresh(bool now= false){};
+        void on_main_loop(){};
         // override this if the panel can handle more or less screen lines
         virtual uint16_t get_screen_lines() { return 4; }
         // used to set a variant for a panel (like viki vs panelolou2)
