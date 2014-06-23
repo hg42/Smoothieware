@@ -10,9 +10,10 @@ fi
 
 make_options=()
 
-#export BUILD_TYPE=Debug
 export GPFLAGS=-fpermissive
-export NONETWORK=1
+
+#export BUILD_TYPE=Debug
+#export NONETWORK=1
 
 if make $make_options all; then
   if $upload_after_build; then
