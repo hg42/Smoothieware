@@ -56,6 +56,7 @@ Kernel::Kernel(){
     this->serial= NULL;
 
     this->streams        = new StreamOutputPool();
+this->streams->printf("streams ready\n");
 
     this->current_path   = "/";
 
@@ -83,6 +84,8 @@ Kernel::Kernel(){
     if(this->serial == NULL) {
         this->serial = new SerialConsole(USBTX, USBRX, this->config->value(uart0_checksum,baud_rate_setting_checksum)->by_default(DEFAULT_SERIAL_BAUD_RATE)->as_number());
     }
+
+this->streams->printf("serial ready, now loading basic modules\n");
 
     this->add_module( this->config );
     this->add_module( this->serial );
