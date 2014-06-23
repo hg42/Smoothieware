@@ -31,7 +31,7 @@ void SerialConsole::on_module_loaded() {
     this->serial->attach(this, &SerialConsole::on_serial_char_received, mbed::Serial::RxIrq);
 
     // We only call the command dispatcher in the main loop, nowhere else
-    this->register_for_event(ON_MAIN_LOOP, on_main_loop);
+    register_for_event(ON_MAIN_LOOP, SerialConsole::on_main_loop);
 
     // Add to the pack of streams kernel can call to, for example for broadcasting
     THEKERNEL->streams->append_stream(this);

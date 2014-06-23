@@ -10,7 +10,7 @@ fi
 
 make_options=()
 
-export GPFLAGS=-fpermissive
+#export GPFLAGS=-fpermissive
 
 #export BUILD_TYPE=Debug
 #export NONETWORK=1

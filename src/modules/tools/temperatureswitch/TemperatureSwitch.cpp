@@ -90,7 +90,7 @@ void TemperatureSwitch::on_config_reload(void *argument)
     current_delay = this->temperatureswitch_heatup_poll;
 
     // Register for events
-    this->register_for_event(ON_SECOND_TICK, on_second_tick);
+    register_for_event(ON_SECOND_TICK, TemperatureSwitch::on_second_tick);
 }
 
 // Called once a second but we only need to service on the cooldown and heatup poll intervals

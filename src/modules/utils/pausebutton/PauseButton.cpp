@@ -26,7 +26,7 @@ void PauseButton::on_module_loaded(){
     this->enable     =  THEKERNEL->config->value( pause_button_enable_checksum )->by_default(false)->as_bool();
     this->button.from_string( THEKERNEL->config->value( pause_button_pin_checksum )->by_default("2.12")->as_string())->as_input();
 
-    this->register_for_event(ON_CONSOLE_LINE_RECEIVED, on_console_line_received);
+    register_for_event(ON_CONSOLE_LINE_RECEIVED, PauseButton::on_console_line_received);
 
     if(this->enable) THEKERNEL->slow_ticker->attach( 100, this, &PauseButton::button_tick );
 }

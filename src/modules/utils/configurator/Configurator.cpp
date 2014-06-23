@@ -27,9 +27,9 @@
 
 void Configurator::on_module_loaded()
 {
-    this->register_for_event(ON_CONSOLE_LINE_RECEIVED, on_console_line_received);
-    //    this->register_for_event(ON_GCODE_RECEIVED, on_gcode_received);
-    //    this->register_for_event(ON_MAIN_LOOP,      on_main_loop);
+    register_for_event(ON_CONSOLE_LINE_RECEIVED, Configurator::on_console_line_received);
+    //    register_for_event(ON_GCODE_RECEIVED, Configurator::on_gcode_received);
+    //    register_for_event(ON_MAIN_LOOP,      Configurator::on_main_loop);
 }
 
 // When a new line is received, check if it is a command, and if it is, act upon it

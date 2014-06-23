@@ -18,7 +18,7 @@ Pauser::Pauser(){
 
 void Pauser::on_module_loaded(){
     this->counter = 0;
-    register_for_event(ON_BLOCK_BEGIN, on_block_begin);
+    register_for_event(ON_BLOCK_BEGIN, Pauser::on_block_begin);
 }
 
 void Pauser::on_block_begin(void* argument)

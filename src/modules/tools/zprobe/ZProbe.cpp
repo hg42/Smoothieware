@@ -63,8 +63,8 @@ void ZProbe::on_module_loaded()
     // load settings
     this->on_config_reload(this);
     // register event-handlers
-    register_for_event(ON_GCODE_RECEIVED, on_gcode_received);
-    register_for_event(ON_IDLE,           on_idle);
+    register_for_event(ON_GCODE_RECEIVED, ZProbe::on_gcode_received);
+    register_for_event(ON_IDLE,           ZProbe::on_idle);
 
     THEKERNEL->slow_ticker->attach( THEKERNEL->stepper->get_acceleration_ticks_per_second() , this, &ZProbe::acceleration_tick );
 }

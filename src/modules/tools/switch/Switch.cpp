@@ -49,11 +49,11 @@ void Switch::on_module_loaded()
 {
     this->switch_changed = false;
 
-    this->register_for_event(ON_GCODE_RECEIVED,  on_gcode_received);
-    this->register_for_event(ON_GCODE_EXECUTE,   on_gcode_execute);
-    this->register_for_event(ON_MAIN_LOOP,       on_main_loop);
-    this->register_for_event(ON_GET_PUBLIC_DATA, on_get_public_data);
-    this->register_for_event(ON_SET_PUBLIC_DATA, on_set_public_data);
+    register_for_event(ON_GCODE_RECEIVED,  Switch::on_gcode_received);
+    register_for_event(ON_GCODE_EXECUTE,   Switch::on_gcode_execute);
+    register_for_event(ON_MAIN_LOOP,       Switch::on_main_loop);
+    register_for_event(ON_GET_PUBLIC_DATA, Switch::on_get_public_data);
+    register_for_event(ON_SET_PUBLIC_DATA, Switch::on_set_public_data);
 
     // Settings
     this->on_config_reload(this);

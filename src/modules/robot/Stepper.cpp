@@ -42,12 +42,12 @@ Stepper::Stepper(){
 
 //Called when the module has just been loaded
 void Stepper::on_module_loaded(){
-    this->register_for_event(ON_BLOCK_BEGIN,    on_block_begin);
-    this->register_for_event(ON_BLOCK_END,      on_block_end);
-    this->register_for_event(ON_GCODE_EXECUTE,  on_gcode_execute);
-    this->register_for_event(ON_GCODE_RECEIVED, on_gcode_received);
-    this->register_for_event(ON_PLAY,           on_play);
-    this->register_for_event(ON_PAUSE,          on_pause);
+    register_for_event(ON_BLOCK_BEGIN,    Stepper::on_block_begin);
+    register_for_event(ON_BLOCK_END,      Stepper::on_block_end);
+    register_for_event(ON_GCODE_EXECUTE,  Stepper::on_gcode_execute);
+    register_for_event(ON_GCODE_RECEIVED, Stepper::on_gcode_received);
+    register_for_event(ON_PLAY,           Stepper::on_play);
+    register_for_event(ON_PAUSE,          Stepper::on_pause);
 
     // Get onfiguration
     this->on_config_reload(this);

@@ -84,12 +84,12 @@ void TemperatureControl::on_module_loaded()
     this->on_config_reload(this);
 
     // Register for events
-    this->register_for_event(ON_GCODE_EXECUTE,   on_gcode_execute);
-    this->register_for_event(ON_GCODE_RECEIVED,  on_gcode_received);
-    this->register_for_event(ON_MAIN_LOOP,       on_main_loop);
-    this->register_for_event(ON_SECOND_TICK,     on_second_tick);
-    this->register_for_event(ON_GET_PUBLIC_DATA, on_get_public_data);
-    this->register_for_event(ON_SET_PUBLIC_DATA, on_set_public_data);
+    register_for_event(ON_GCODE_EXECUTE,   TemperatureControl::on_gcode_execute);
+    register_for_event(ON_GCODE_RECEIVED,  TemperatureControl::on_gcode_received);
+    register_for_event(ON_MAIN_LOOP,       TemperatureControl::on_main_loop);
+    register_for_event(ON_SECOND_TICK,     TemperatureControl::on_second_tick);
+    register_for_event(ON_GET_PUBLIC_DATA, TemperatureControl::on_get_public_data);
+    register_for_event(ON_SET_PUBLIC_DATA, TemperatureControl::on_set_public_data);
 }
 
 void TemperatureControl::on_main_loop(void *argument)

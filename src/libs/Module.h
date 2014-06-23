@@ -37,11 +37,11 @@ class Module
 public:
     Module();
     virtual ~Module();
-    void on_module_loaded(){};
-
-    void register_for_event_(_EVENT_ENUM event_id, ModuleCallback event_handler);
+    virtual void on_module_loaded(){};
 };
 
-#define register_for_event(id,function) register_for_event_(id, std::bind(&function, *this, std::placeholders::_1))
+#define register_for_event(id,function) THEKERNEL->register_for_event_(id, std::bind(&function, *this, std::placeholders::_1))
 
 #endif
+
+#include "Kernel.h"

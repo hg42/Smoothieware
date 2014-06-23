@@ -85,14 +85,14 @@ void Extruder::on_module_loaded()
     this->on_config_reload(this);
 
     // We work on the same Block as Stepper, so we need to know when it gets a new one and drops one
-    this->register_for_event(ON_BLOCK_BEGIN,     on_block_begin);
-    this->register_for_event(ON_BLOCK_END,       on_block_end);
-    this->register_for_event(ON_GCODE_RECEIVED,  on_gcode_received);
-    this->register_for_event(ON_GCODE_EXECUTE,   on_gcode_execute);
-    this->register_for_event(ON_PLAY,            on_play);
-    this->register_for_event(ON_PAUSE,           on_pause);
-    this->register_for_event(ON_SPEED_CHANGE,    on_speed_change);
-    this->register_for_event(ON_GET_PUBLIC_DATA, on_get_public_data);
+    register_for_event(ON_BLOCK_BEGIN,     Extruder::on_block_begin);
+    register_for_event(ON_BLOCK_END,       Extruder::on_block_end);
+    register_for_event(ON_GCODE_RECEIVED,  Extruder::on_gcode_received);
+    register_for_event(ON_GCODE_EXECUTE,   Extruder::on_gcode_execute);
+    register_for_event(ON_PLAY,            Extruder::on_play);
+    register_for_event(ON_PAUSE,           Extruder::on_pause);
+    register_for_event(ON_SPEED_CHANGE,    Extruder::on_speed_change);
+    register_for_event(ON_GET_PUBLIC_DATA, Extruder::on_get_public_data);
 
     // Start values
     this->target_position = 0;

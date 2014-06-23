@@ -26,7 +26,7 @@ GcodeDispatch::GcodeDispatch() {}
 void GcodeDispatch::on_module_loaded()
 {
     return_error_on_unhandled_gcode = THEKERNEL->config->value( return_error_on_unhandled_gcode_checksum )->by_default(false)->as_bool();
-    this->register_for_event(ON_CONSOLE_LINE_RECEIVED, GcodeDispatch::on_console_line_received);
+    register_for_event(ON_CONSOLE_LINE_RECEIVED, GcodeDispatch::on_console_line_received);
     currentline = -1;
     uploading = false;
     last_g= 255;

@@ -36,9 +36,9 @@ void Touchprobe::on_module_loaded() {
     // load settings
     this->on_config_reload(this);
     // register event-handlers
-    register_for_event(ON_CONFIG_RELOAD,  on_config_reload);
-    register_for_event(ON_GCODE_RECEIVED, on_gcode_received);
-    register_for_event(ON_IDLE,           on_idle);
+    register_for_event(ON_CONFIG_RELOAD,  Touchprobe::on_config_reload);
+    register_for_event(ON_GCODE_RECEIVED, Touchprobe::on_gcode_received);
+    register_for_event(ON_IDLE,           Touchprobe::on_idle);
 }
 
 void Touchprobe::on_config_reload(void* argument){

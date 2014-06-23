@@ -208,8 +208,8 @@ void LPC17XX_Ethernet::on_module_loaded()
     emac_init();
     DEBUG_PRINTF("INIT OK\n");
 
-    //register_for_event(ON_IDLE,        on_idle);
-    register_for_event(ON_SECOND_TICK, on_second_tick);
+    //register_for_event(ON_IDLE,        LPC17XX_Ethernet::on_idle);
+    register_for_event(ON_SECOND_TICK, LPC17XX_Ethernet::on_second_tick);
 }
 
 void LPC17XX_Ethernet::on_idle(void*)

@@ -166,9 +166,9 @@ void Panel::on_module_loaded()
     }
 
     // Register for events
-    this->register_for_event(ON_IDLE,           on_idle);
-    this->register_for_event(ON_MAIN_LOOP,      on_main_loop);
-    this->register_for_event(ON_GCODE_RECEIVED, on_gcode_received);
+    register_for_event(ON_IDLE,           Panel::on_idle);
+    register_for_event(ON_MAIN_LOOP,      Panel::on_main_loop);
+    register_for_event(ON_GCODE_RECEIVED, Panel::on_gcode_received);
 
     // Refresh timer
     THEKERNEL->slow_ticker->attach( 20, this, &Panel::refresh_tick );
