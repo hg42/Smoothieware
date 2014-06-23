@@ -1,12 +1,20 @@
 
+#set -x
+
 source config.zsh
 
 if [[ -n $excluded_modules ]]; then
   echo "-- exclude modules: $excluded_modules"
-  excluded_modules="EXCLUDED_MODULES=$excluded_modules"
+  export EXCLUDED_MODULES=$excluded_modules
 fi
 
-if make $excluded_modules all; then
+make_options=()
+
+#export BUILD_TYPE=Debug
+export GPFLAGS=-fpermissive
+export NONETWORK=1
+
+if make $make_options all; then
   if $upload_after_build; then
     source upload.zsh
   fi

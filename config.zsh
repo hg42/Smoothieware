@@ -27,4 +27,4 @@ firmware_built=LPC1768/main.bin
 upload_after_build=false
 burn_after_build=true
 
-#excluded_modules="tools/touchprobe tools/zprobe tools/laser utils/panel"
+excluded_modules="tools/touchprobe tools/zprobe tools/laser utils/panel"
