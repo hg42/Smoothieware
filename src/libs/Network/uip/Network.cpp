@@ -160,9 +160,9 @@ void Network::on_module_loaded()
     THEKERNEL->slow_ticker->attach( 100, this, &Network::tick );
 
     // Register for events
-    this->register_for_event(ON_IDLE);
-    this->register_for_event(ON_MAIN_LOOP);
-    this->register_for_event(ON_GET_PUBLIC_DATA);
+    this->register_for_event(ON_IDLE,            on_idle);
+    this->register_for_event(ON_MAIN_LOOP,       on_main_loop);
+    this->register_for_event(ON_GET_PUBLIC_DATA, on_public_data);
 
     this->init();
 }

@@ -127,9 +127,9 @@ static uint32_t heapWalk(StreamOutput *stream, bool verbose)
 
 void SimpleShell::on_module_loaded()
 {
-    this->register_for_event(ON_CONSOLE_LINE_RECEIVED);
-	this->register_for_event(ON_GCODE_RECEIVED);
-	this->register_for_event(ON_SECOND_TICK);
+    this->register_for_event(ON_CONSOLE_LINE_RECEIVED, on_console_line_received);
+    this->register_for_event(ON_GCODE_RECEIVED,        on_gcode_received);
+    this->register_for_event(ON_SECOND_TICK,           on_second_tick);
 
     reset_delay_secs = 0;
 }

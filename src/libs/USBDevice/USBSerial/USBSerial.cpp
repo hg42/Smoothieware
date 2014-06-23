@@ -253,7 +253,7 @@ uint8_t USBSerial::available()
 
 void USBSerial::on_module_loaded()
 {
-    this->register_for_event(ON_MAIN_LOOP);
+    this->register_for_event(ON_MAIN_LOOP, on_main_loop);
 }
 
 void USBSerial::on_main_loop(void *argument)

@@ -27,8 +27,8 @@ void PID_Autotuner::on_module_loaded()
 {
     tick = false;
     THEKERNEL->slow_ticker->attach(20, this, &PID_Autotuner::on_tick );
-    register_for_event(ON_IDLE);
-    register_for_event(ON_GCODE_RECEIVED);
+    register_for_event(ON_IDLE,           on_idle);
+    register_for_event(ON_GCODE_RECEIVED, on_gcode_received);
 }
 
 void PID_Autotuner::begin(float target, StreamOutput *stream, int ncycles)

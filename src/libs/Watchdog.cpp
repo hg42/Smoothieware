@@ -21,7 +21,7 @@ void Watchdog::feed()
 
 void Watchdog::on_module_loaded()
 {
-    register_for_event(ON_IDLE);
+    register_for_event(ON_IDLE, on_idle);
     feed();
 }
 

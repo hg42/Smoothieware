@@ -47,9 +47,9 @@ SlowTicker::SlowTicker(){
 }
 
 void SlowTicker::on_module_loaded(){
-    register_for_event(ON_IDLE);
-    register_for_event(ON_GCODE_RECEIVED);
-    register_for_event(ON_GCODE_EXECUTE);
+    register_for_event(ON_IDLE,           on_idle);
+    register_for_event(ON_GCODE_RECEIVED, on_gcode_received);
+    register_for_event(ON_GCODE_EXECUTE,  on_gcode_execute);
 }
 
 // Set the base frequency we use for all sub-frequencies

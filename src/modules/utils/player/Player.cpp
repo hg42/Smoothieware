@@ -33,12 +33,12 @@ void Player::on_module_loaded()
     this->playing_file = false;
     this->current_file_handler = NULL;
     this->booted = false;
-    this->register_for_event(ON_CONSOLE_LINE_RECEIVED);
-    this->register_for_event(ON_MAIN_LOOP);
-    this->register_for_event(ON_SECOND_TICK);
-    this->register_for_event(ON_GET_PUBLIC_DATA);
-    this->register_for_event(ON_SET_PUBLIC_DATA);
-    this->register_for_event(ON_GCODE_RECEIVED);
+    this->register_for_event(ON_CONSOLE_LINE_RECEIVED, on_console_line_received);
+    this->register_for_event(ON_MAIN_LOOP,             on_main_loop);
+    this->register_for_event(ON_SECOND_TICK,           on_second_tick);
+    this->register_for_event(ON_GET_PUBLIC_DATA,       on_get_public_data);
+    this->register_for_event(ON_SET_PUBLIC_DATA,       on_set_public_data);
+    this->register_for_event(ON_GCODE_RECEIVED,        on_gcode_received);
 
     this->on_boot_gcode = THEKERNEL->config->value(on_boot_gcode_checksum)->by_default("/sd/on_boot.gcode")->as_string();
     this->on_boot_gcode_enable = THEKERNEL->config->value(on_boot_gcode_enable_checksum)->by_default(true)->as_bool();

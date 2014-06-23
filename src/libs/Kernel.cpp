@@ -139,20 +139,20 @@ void Kernel::add_module(Module* module){
 }
 
 // Adds a hook for a given module and event
-void Kernel::register_for_event(_EVENT_ENUM id_event, Module *mod){
-    this->hooks[id_event].push_back(mod);
+void Kernel::register_for_event(_EVENT_ENUM event_id, Module* module, ModuleCallback event_handler){
+    this->hooks[event_id].push_back(EventHook(module, event_handler));
 }
 
 // Call a specific event without arguments
 void Kernel::call_event(_EVENT_ENUM id_event){
     for (auto m : hooks[id_event]) {
-        (m->*kernel_callback_functions[id_event])(this);
+        m->module->*m->handler(this);
     }
 }
 
 // Call a specific event with an argument
 void Kernel::call_event(_EVENT_ENUM id_event, void * argument){
     for (auto m : hooks[id_event]) {
-        (m->*kernel_callback_functions[id_event])(argument);
+        m->module->*m->handler(argument);
     }
 }

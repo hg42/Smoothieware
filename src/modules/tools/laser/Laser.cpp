@@ -63,12 +63,12 @@ void Laser::on_module_loaded() {
     this->laser_tickle_power = THEKERNEL->config->value(laser_module_tickle_power_checksum)->by_default(0   )->as_number() ;
 
     //register for events
-    this->register_for_event(ON_GCODE_EXECUTE);
-    this->register_for_event(ON_SPEED_CHANGE);
-    this->register_for_event(ON_PLAY);
-    this->register_for_event(ON_PAUSE);
-    this->register_for_event(ON_BLOCK_BEGIN);
-    this->register_for_event(ON_BLOCK_END);
+    this->register_for_event(ON_GCODE_EXECUTE, on_gcode_execute);
+    this->register_for_event(ON_SPEED_CHANGE,  on_speed_change);
+    this->register_for_event(ON_PLAY,          on_play);
+    this->register_for_event(ON_PAUSE,         on_pause);
+    this->register_for_event(ON_BLOCK_BEGIN,   on_block_begin);
+    this->register_for_event(ON_BLOCK_END,     on_block_end);
 }
 
 // Turn laser off laser at the end of a move

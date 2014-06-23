@@ -129,9 +129,9 @@ Robot::Robot()
 //Called when the module has just been loaded
 void Robot::on_module_loaded()
 {
-    this->register_for_event(ON_GCODE_RECEIVED);
-    this->register_for_event(ON_GET_PUBLIC_DATA);
-    this->register_for_event(ON_SET_PUBLIC_DATA);
+    this->register_for_event(ON_GCODE_RECEIVED,  on_gcode_received);
+    this->register_for_event(ON_GET_PUBLIC_DATA, on_get_public_data);
+    this->register_for_event(ON_SET_PUBLIC_DATA, on_set_public_data);
 
     // Configuration
     this->on_config_reload(this);

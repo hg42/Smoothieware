@@ -113,9 +113,9 @@ void Endstops::on_module_loaded()
         return;
     }
 
-    register_for_event(ON_GCODE_RECEIVED);
-    register_for_event(ON_GET_PUBLIC_DATA);
-    register_for_event(ON_SET_PUBLIC_DATA);
+    register_for_event(ON_GCODE_RECEIVED,  on_gcode_received);
+    register_for_event(ON_GET_PUBLIC_DATA, on_get_public_data);
+    register_for_event(ON_SET_PUBLIC_DATA, on_set_public_data);
 
     THEKERNEL->slow_ticker->attach( THEKERNEL->stepper->get_acceleration_ticks_per_second() , this, &Endstops::acceleration_tick );
 

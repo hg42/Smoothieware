@@ -27,8 +27,8 @@ enum _EVENT_ENUM {
 };
 
 class Module;
+//typedef void (Module::*ModuleCallback)(void * argument);
 typedef void (Module::*ModuleCallback)(void * argument);
-extern const ModuleCallback kernel_callback_functions[NUMBER_OF_DEFINED_EVENTS];
 
 // Module base class
 // All modules must extend this class, see http://smoothieware.org/moduleexample
@@ -39,24 +39,7 @@ public:
     virtual ~Module();
     virtual void on_module_loaded(){};
 
-    void register_for_event(_EVENT_ENUM event_id);
-
-    // event callbacks, not every module will implement all of these
-    // there should be one for each _EVENT_ENUM
-    virtual void on_main_loop(void*){};
-    virtual void on_console_line_received(void*){};
-    virtual void on_gcode_received(void*){};
-    virtual void on_gcode_execute(void*){};
-    virtual void on_speed_change(void*){};
-    virtual void on_block_begin(void*){};
-    virtual void on_block_end(void*){};
-    virtual void on_play(void*){};
-    virtual void on_pause(void*){};
-    virtual void on_idle(void*){};
-    virtual void on_second_tick(void*){};
-    virtual void on_get_public_data(void*){};
-    virtual void on_set_public_data(void*){};
-
+    void register_for_event(_EVENT_ENUM event_id, ModuleCallback event_handler);
 };
 
 #endif

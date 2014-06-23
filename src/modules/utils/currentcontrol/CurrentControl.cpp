@@ -66,7 +66,7 @@ void CurrentControl::on_module_loaded(){
 
     this->original_delta_current= this->delta_current; // remember this to determine if we want to save on M500
 
-    this->register_for_event(ON_GCODE_RECEIVED);
+    this->register_for_event(ON_GCODE_RECEIVED, on_gcode_received);
 }
 
 
