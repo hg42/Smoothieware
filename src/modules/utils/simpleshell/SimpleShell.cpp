@@ -191,10 +191,13 @@ bool SimpleShell::parse_command(const char *cmd, string args, StreamOutput *stre
     return false;
 }
 
+#include "StreamOutputPool.h"
+
 // When a new line is received, check if it is a command, and if it is, act upon it
 void SimpleShell::on_console_line_received( void *argument )
 {
     SerialMessage new_message = *static_cast<SerialMessage *>(argument);
+THEKERNEL->streams->printf("Received %s\r\n", new_message.message.c_str());
 
     // ignore comments and blank lines and if this is a G code then also ignore it
     char first_char = new_message.message[0];

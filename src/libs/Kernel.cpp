@@ -56,7 +56,6 @@ Kernel::Kernel(){
     this->serial= NULL;
 
     this->streams        = new StreamOutputPool();
-this->streams->printf("streams ready\n");
 
     this->current_path   = "/";
 
@@ -84,8 +83,6 @@ this->streams->printf("streams ready\n");
     if(this->serial == NULL) {
         this->serial = new SerialConsole(USBTX, USBRX, this->config->value(uart0_checksum,baud_rate_setting_checksum)->by_default(DEFAULT_SERIAL_BAUD_RATE)->as_number());
     }
-
-this->streams->printf("serial ready, now loading basic modules\n");
 
     this->add_module( this->config );
     this->add_module( this->serial );
@@ -148,14 +145,18 @@ void Kernel::register_for_event_(_EVENT_ENUM event_id, ModuleCallback event_hand
 
 // Call a specific event without arguments
 void Kernel::call_event(_EVENT_ENUM id_event){
+    //if(id_event != ON_IDLE) serial->printf("call_event(%d) %d consumers\n", id_event, hooks[id_event].size());
     for (auto m : hooks[id_event]) {
+        if(id_event != ON_IDLE) serial->printf("call_event(%d)\n", id_event);
         m(this);
     }
 }
 
 // Call a specific event with an argument
 void Kernel::call_event(_EVENT_ENUM id_event, void * argument){
+    //if(id_event != ON_IDLE) serial->printf("call_event(%d, %p) %d consumers\n", id_event, argument, hooks[id_event].size());
     for (auto m : hooks[id_event]) {
+        if(id_event != ON_IDLE) serial->printf("call_event(%d, %p)\n", id_event, argument);
         m(argument);
     }
 }

@@ -76,7 +76,6 @@ TemperatureControl::~TemperatureControl()
 
 void TemperatureControl::on_module_loaded()
 {
-
     // We start not desiring any temp
     this->target_temperature = UNDEFINED;
 
@@ -84,12 +83,19 @@ void TemperatureControl::on_module_loaded()
     this->on_config_reload(this);
 
     // Register for events
+THEKERNEL->streams->printf("TemperatureControl: register...\n");
     register_for_event(ON_GCODE_EXECUTE,   TemperatureControl::on_gcode_execute);
+THEKERNEL->streams->printf("TemperatureControl: register...1\n");
     register_for_event(ON_GCODE_RECEIVED,  TemperatureControl::on_gcode_received);
+THEKERNEL->streams->printf("TemperatureControl: register...2\n");
     register_for_event(ON_MAIN_LOOP,       TemperatureControl::on_main_loop);
+THEKERNEL->streams->printf("TemperatureControl: register...3\n");
     register_for_event(ON_SECOND_TICK,     TemperatureControl::on_second_tick);
+THEKERNEL->streams->printf("TemperatureControl: register...4\n");
     register_for_event(ON_GET_PUBLIC_DATA, TemperatureControl::on_get_public_data);
+THEKERNEL->streams->printf("TemperatureControl: register...5\n");
     register_for_event(ON_SET_PUBLIC_DATA, TemperatureControl::on_set_public_data);
+THEKERNEL->streams->printf("TemperatureControl: register ok.\n");
 }
 
 void TemperatureControl::on_main_loop(void *argument)
@@ -103,6 +109,7 @@ void TemperatureControl::on_main_loop(void *argument)
 // Get configuration from the config file
 void TemperatureControl::on_config_reload(void *argument)
 {
+THEKERNEL->streams->printf("TemperatureControl: on_config_reload begin\n");
 
     // General config
     this->set_m_code          = THEKERNEL->config->value(temperature_control_checksum, this->name_checksum, set_m_code_checksum)->by_default(104)->as_number();
@@ -162,6 +169,7 @@ void TemperatureControl::on_config_reload(void *argument)
     this->iTerm = 0.0;
     this->lastInput = -1.0;
     this->last_reading = 0.0;
+THEKERNEL->streams->printf("TemperatureControl: on_config_reload end\n");
 }
 
 void TemperatureControl::on_gcode_received(void *argument)

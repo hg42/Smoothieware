@@ -100,22 +100,35 @@ void Conveyor::on_idle(void* argument){
  *
  */
 
+#include "SerialConsole.h"
+
 void Conveyor::on_main_loop(void*)
 {
+THEKERNEL->serial->printf("conveyor: 1\n");
     if (running)
         return;
+THEKERNEL->serial->printf("conveyor: 2\n");
 
     if (queue.is_empty())
     {
+THEKERNEL->serial->printf("conveyor: 3\n");
         if (queue.head_ref()->gcodes.size())
         {
+THEKERNEL->serial->printf("conveyor: 4\n");
             queue_head_block();
+THEKERNEL->serial->printf("conveyor: 5\n");
             ensure_running();
+THEKERNEL->serial->printf("conveyor: 6\n");
         }
     }
     else
+        {
+THEKERNEL->serial->printf("conveyor: 7\n");
         // queue not empty
         ensure_running();
+THEKERNEL->serial->printf("conveyor: 8\n");
+        }
+THEKERNEL->serial->printf("conveyor: 9\n");
 }
 
 void Conveyor::on_config_reload(void* argument)
@@ -167,6 +180,7 @@ void Conveyor::queue_head_block()
 {
     while (queue.is_full())
     {
+THEKERNEL->serial->printf("conveyor: qhb\n");
         ensure_running();
         THEKERNEL->call_event(ON_IDLE, this);
     }
