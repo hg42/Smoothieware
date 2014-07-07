@@ -93,31 +93,6 @@ void init() {
     kernel->add_module( new Configurator() );
 
 
-    // initialize usb/dfu/etc. first to allow flashing when a module loops endless
-    // but doesn't help on exceptions
-
-    // Create and initialize USB stuff
-    u.init();
-    //if(sdok) { // only do this if there is an sd disk
-    //    msc= new USBMSD(&u, &sd);
-    //    kernel->add_module( msc );
-    //}
-
-    // if(msc != NULL){
-    //     kernel->add_module( msc );
-    // }
-
-    kernel->add_module( &msc );
-
-    kernel->add_module( &usbserial );
-    if( kernel->config->value( second_usb_serial_enable_checksum )->by_default(false)->as_bool() ){
-        kernel->add_module( new USBSerial(&u) );
-    }
-
-    kernel->add_module( &dfu );
-    kernel->add_module( &u );
-
-
     kernel->add_module( new Leds() );   // used below
 
 
@@ -181,6 +156,27 @@ void init() {
     PublicData::set_value( leds_checksum, post_checksum, &(post=15));
     kernel->add_module( new Network() );
     #endif
+
+    // Create and initialize USB stuff
+    u.init();
+    //if(sdok) { // only do this if there is an sd disk
+    //    msc= new USBMSD(&u, &sd);
+    //    kernel->add_module( msc );
+    //}
+
+    // if(msc != NULL){
+    //     kernel->add_module( msc );
+    // }
+
+    kernel->add_module( &msc );
+
+    kernel->add_module( &usbserial );
+    if( kernel->config->value( second_usb_serial_enable_checksum )->by_default(false)->as_bool() ){
+        kernel->add_module( new USBSerial(&u) );
+    }
+
+    kernel->add_module( &dfu );
+    kernel->add_module( &u );
 
     PublicData::set_value( leds_checksum, post_checksum, &(post=END_OF_POST));
 
